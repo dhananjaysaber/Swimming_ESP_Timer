@@ -4,7 +4,7 @@ const API =
   'https://script.google.com/macros/s/AKfycbxeZVjT5VEh4L96vDxDqiR1DHMMRE7td4VlR4Kqnr-NFRUAuI0HeDqVuV6K5SWT0gFaWg/exec';
 
 // ESP32 WebSocket (same IP as printed in Serial Monitor)
-const ESP32_WS_URL = 'ws://172.18.0.98:81';
+const ESP32_WS_URL = 'ws://172.18.0.113:81';
 
 // Max lanes
 const MAX_LANES = 8;
