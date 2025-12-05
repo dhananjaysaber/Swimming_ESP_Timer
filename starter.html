@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panthers Starter Console</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: #001a33;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .starter-wrapper {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+        text-align: center;
+      }
+      .starter-title {
+        font-size: 28px;
+        margin-bottom: 4px;
+        color: #ffcc00;
+        letter-spacing: 1px;
+      }
+      .starter-sub {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 20px;
+      }
+      .starter-panel {
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 24px;
+      }
+      .current-info {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+      .nav-row {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .nav-row button {
+        padding: 8px 14px;
+        font-size: 14px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        background: #1e90ff;
+        color: #fff;
+      }
+      .nav-row button.secondary {
+        background: #334155;
+      }
+      .heat-list {
+        font-size: 14px;
+        opacity: 0.85;
+        margin-top: 8px;
+      }
+      .lane-links {
+        margin-top: 16px;
+        text-align: left;
+      }
+      .lane-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: rgba(15, 23, 42, 0.7);
+        padding: 8px 10px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+      .lane-row span {
+        font-weight: 600;
+        color: #ffcc00;
+      }
+      .lane-url {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 11px;
+        opacity: 0.8;
+      }
+      .lane-row button {
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        background: #0f766e;
+        color: #fff;
+      }
+      .notice {
+        font-size: 12px;
+        opacity: 0.8;
+        margin-top: 8px;
+      }
+      #startRaceBtn {
+        margin-top: 12px;
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: none;
+        background: #22c55e;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      #startRaceBtn:active {
+        transform: scale(0.97);
+      }
+      /* NEW: Set Race button */
+      #setRaceBtn {
+        margin-top: 10px;
+        padding: 8px 18px;
+        border-radius: 999px;
+        border: none;
+        background: #38bdf8;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      #setRaceBtn:active {
+        transform: scale(0.98);
+      }
+
+      /* NEW: Lane readiness styles */
+      .lane-status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: rgba(15, 23, 42, 0.7);
+        padding: 8px 10px;
+        border-radius: 10px;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+      .lane-status-label {
+        font-weight: 600;
+        color: #ffcc00;
+      }
+      .lane-status-pill {
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+      .lane-status-pill.ready {
+        background: #16a34a;
+        color: #ecfdf5;
+      }
+      .lane-status-pill.not-ready {
+        background: #b91c1c;
+        color: #fee2e2;
+      }
+      .lane-status-pill.waiting {
+        background: #4b5563;
+        color: #e5e7eb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="starter-wrapper">
+      <h1 class="starter-title">Panthers Starter Console</h1>
+      <p class="starter-sub">
+        Move through Events &amp; Heats • Sync lanes • Confirm READY • Fire
+        START.
+      </p>
+
+      <div class="starter-panel">
+        <div class="current-info">
+          Event <span id="curEvent">-</span> &nbsp; • &nbsp; Heat
+          <span id="curHeat">-</span>
+        </div>
+
+        <div class="nav-row">
+          <button id="prevEventBtn" class="secondary">◀ Prev Event</button>
+          <button id="nextEventBtn">Next Event ▶</button>
+        </div>
+
+        <div class="nav-row">
+          <button id="prevHeatBtn" class="secondary">◀ Prev Heat</button>
+          <button id="nextHeatBtn">Next Heat ▶</button>
+        </div>
+
+        <div class="heat-list">
+          <span id="heatListText"></span>
+        </div>
+
+        <!-- NEW: Set race to lane devices -->
+        <button id="setRaceBtn">SET RACE TO LANES</button>
+
+        <!-- Start race button -->
+        <button id="startRaceBtn">START RACE</button>
+
+        <!-- 🔹 NEW status message line -->
+        <p id="startStatus" class="notice" style="margin-top: 8px"></p>
+      </div>
+
+      <div class="starter-panel">
+        <h3 style="margin-top: 0; font-size: 18px">
+          Lane Links (current Event &amp; Heat)
+        </h3>
+        <div class="lane-links" id="laneLinks"></div>
+        <p class="notice">
+          Tip: Share these URLs once with lane timekeepers or convert them into
+          QR codes. Lanes will automatically follow Event &amp; Heat changes.
+        </p>
+      </div>
+
+      <!-- NEW: Lane readiness panel -->
+      <div class="starter-panel">
+        <h3 style="margin-top: 0; font-size: 18px">
+          Lane Readiness (Event <span id="statusEvent">-</span> • Heat
+          <span id="statusHeat">-</span>)
+        </h3>
+        <div id="laneStatusPanel"></div>
+        <p class="notice">
+          Ensure all lanes show <strong>READY</strong> before you press
+          <strong>START RACE</strong>.
+        </p>
+      </div>
+
+      <p class="notice">
+        Note: ESP32 Wi-Fi Trigger will start/stop lane timers. GAS is used only
+        for race setup and results logging.
+      </p>
+    </div>
+
+    <!-- 🔊 Start tone audio (plays from this laptop → big speakers) -->
+    <audio id="startTone" preload="auto">
+      <source
+        src="https://tbspanthers.british-school.org/wp-content/uploads/2025/12/swimming_starter.mp3"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <!-- (Optional) Test button to check sound before the meet -->
+    <div style="text-align: center; margin-top: 8px">
+      <button
+        id="testToneBtn"
+        style="
+          padding: 6px 14px;
+          border-radius: 999px;
+          border: none;
+          background: #f97316;
+          color: #fff;
+          font-size: 12px;
+          cursor: pointer;
+        "
+      >
+        🔊 TEST START SOUND
+      </button>
+    </div>
+
+    <script src="starter.js"></script>
+  </body>
+</html>

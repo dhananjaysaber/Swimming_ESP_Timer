@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panthers Swim Timer</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="laneBox">
+        <h1 id="laneNumber">LANE ?</h1>
+        <div id="timerDisplay">00:00.00</div>
+
+        <div id="swimmerInfo">
+          <div id="swimmerName">Loading…</div>
+          <div id="swimmerSchool"></div>
+        </div>
+
+        <div id="controls">
+          <button id="startBtn" class="btn start">START</button>
+          <button id="stopBtn" class="btn stop">STOP</button>
+
+          <label id="dqLabel">
+            <input type="checkbox" id="dqCheckbox" />
+            DQ
+          </label>
+
+          <button id="submitBtn" class="btn submit">SUBMIT</button>
+        </div>
+
+        <div id="statusBox">
+          <p id="btStatus">Bluetooth: Not Connected</p>
+          <p id="laneStatus">Lane Loaded: …</p>
+          <p id="raceStatus">Race Status: Not ready</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

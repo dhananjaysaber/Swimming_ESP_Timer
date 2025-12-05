@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panthers Timer — Multi-Lane Omega Console</title>
+
+    <style>
+      :root {
+        --bg: #020617;
+        --card: #020617;
+        --panel: #020617;
+        --lane-bg: #020617;
+        --lane-border: #1e293b;
+        --lane-header: #0f172a;
+        --lane-accent: #facc15;
+        --lane-text: #e5e7eb;
+        --start: #22c55e;
+        --stop: #ef4444;
+        --outline: rgba(148, 163, 184, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 16px;
+        background: radial-gradient(
+          circle at top,
+          #0f172a 0,
+          #020617 48%,
+          #000 100%
+        );
+        color: var(--lane-text);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          sans-serif;
+        min-height: 100vh;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin: 0 0 4px;
+        color: var(--lane-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .sub {
+        font-size: 13px;
+        opacity: 0.85;
+        margin-bottom: 12px;
+      }
+
+      .top-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .top-bar input {
+        width: 64px;
+        padding: 4px 6px;
+        border-radius: 6px;
+        border: 1px solid #4b5563;
+        background: #020617;
+        color: var(--lane-text);
+      }
+
+      .btn {
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: none;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .btn-main {
+        background: #22c55e;
+        color: #0f172a;
+      }
+
+      .console-wrap {
+        border-radius: 14px;
+        border: 1px solid var(--outline);
+        padding: 10px;
+        background: radial-gradient(
+          circle at top,
+          #020617 0,
+          #020617 60%,
+          #000 100%
+        );
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
+      }
+
+      .console-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+      }
+
+      .status-pill {
+        padding: 3px 10px;
+        border-radius: 999px;
+        border: 1px solid #38bdf8;
+        color: #e0f2fe;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+      }
+
+      .lane-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      @media (max-width: 1024px) {
+        .lane-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        .lane-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 520px) {
+        .lane-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .lane-card {
+        background: radial-gradient(circle at top left, #0f172a 0, #020617 55%);
+        border-radius: 12px;
+        border: 1px solid var(--lane-border);
+        padding: 10px;
+        position: relative;
+      }
+
+      .lane-timer {
+        font-family: 'SF Mono', monospace;
+        font-size: 26px;
+        letter-spacing: 0.12em;
+        text-align: center;
+        color: #e5e7eb;
+        text-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        margin: 6px 0 4px;
+      }
+
+      .lane-swimmer {
+        text-align: right;
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .lane-school {
+        text-align: right;
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .btn-stop {
+        background: var(--stop);
+        color: #fff;
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+
+      .small-tag {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid #4b5563;
+        letter-spacing: 0.12em;
+      }
+
+      .tag-running {
+        border-color: #22c55e;
+        color: #bbf7d0;
+      }
+      .tag-stopped {
+        border-color: #f97316;
+        color: #fed7aa;
+      }
+      .tag-empty {
+        border-color: #6b7280;
+        color: #9ca3af;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Panthers Timer — Multi-Lane Omega Console</h1>
+    <p class="sub">
+      Use <code>starter.html</code> to START all lanes together.
+    </p>
+
+    <div class="top-bar">
+      <label>Event: <input type="number" id="eventInput" value="1" /></label>
+      <label>Heat: <input type="number" id="heatInput" value="1" /></label>
+      <button class="btn btn-main" id="loadBtn">Load Lanes</button>
+    </div>
+
+    <div class="console-wrap">
+      <div class="console-header">
+        <div>
+          Event <strong id="hdrEvent">-</strong> • Heat
+          <strong id="hdrHeat">-</strong>
+        </div>
+        <div class="status-pill" id="consoleStatus">Waiting…</div>
+      </div>
+
+      <div class="lane-grid" id="laneGrid"></div>
+    </div>
+
+    <script>
+      const API =
+        'https://script.google.com/macros/s/AKfycbxeZVjT5VEh4L96vDxDqiR1DHMMRE7td4VlR4Kqnr-NFRUAuI0HeDqVuV6K5SWT0gFaWg/exec';
+
+      const grid = document.getElementById('laneGrid');
+      let LANES = {};
+
+      let lastStart = null;
+      let poll, tick;
+
+      function setStatus(text) {
+        document.getElementById('consoleStatus').textContent = text;
+      }
+
+      function format(ms) {
+        const t = ms / 1000;
+        const m = Math.floor(t / 60);
+        const s = (t % 60).toFixed(2);
+        return `${String(m).padStart(2, '0')}:${String(s).padStart(5, '0')}`;
+      }
+
+      function createCards() {
+        grid.innerHTML = '';
+        for (let i = 1; i <= 8; i++) {
+          grid.innerHTML += `
+          <div class="lane-card" id="card-${i}">
+            <div style="display:flex; justify-content:space-between;">
+              <div style="font-size:11px; letter-spacing:0.1em">LANE ${i}</div>
+              <div class="lane-swimmer" id="sw-${i}">—</div>
+            </div>
+            <div class="lane-school" id="sc-${i}"></div>
+            <div class="lane-timer" id="tm-${i}">00:00.00</div>
+            <div class="small-tag tag-empty" id="tag-${i}">EMPTY</div>
+            <div style="margin-top:6px">
+              <button class="btn-stop" onclick="stopLane(${i})">STOP</button>
+            </div>
+          </div>
+        `;
+        }
+      }
+
+      async function loadLane(ev, ht, lane) {
+        try {
+          const res = await fetch(
+            `${API}?action=getLane&event=${ev}&heat=${ht}&lane=${lane}`
+          );
+          const data = await res.json();
+
+          if (!data.ok) {
+            document.getElementById(`tag-${lane}`).textContent = 'EMPTY';
+            document.getElementById(`tag-${lane}`).className =
+              'small-tag tag-empty';
+            return;
+          }
+
+          LANES[lane] = { running: false, start: null, elapsed: 0 };
+
+          document.getElementById(`sw-${lane}`).textContent = data.swimmer;
+          document.getElementById(`sc-${lane}`).textContent = data.school || '';
+          document.getElementById(`tm-${lane}`).textContent = '00:00.00';
+          document.getElementById(`tag-${lane}`).textContent = 'READY';
+          document.getElementById(`tag-${lane}`).className = 'small-tag';
+        } catch (e) {
+          console.error('Lane error', lane, e);
+        }
+      }
+
+      function tickTimers() {
+        const now = performance.now();
+        for (let lane = 1; lane <= 8; lane++) {
+          const o = LANES[lane];
+          if (o?.running) {
+            o.elapsed = now - o.start;
+            document.getElementById(`tm-${lane}`).textContent = format(
+              o.elapsed
+            );
+          }
+        }
+      }
+
+      async function checkStart(ev, ht) {
+        try {
+          const res = await fetch(
+            `${API}?action=getStart&event=${ev}&heat=${ht}`
+          );
+          const data = await res.json();
+          if (!data.ok) return;
+
+          const ts = data.startTs;
+          if (!ts || ts === lastStart) return;
+
+          lastStart = ts;
+          startAll();
+        } catch (e) {
+          console.warn('Poll error', e);
+        }
+      }
+
+      function startAll() {
+        const now = performance.now();
+        for (let lane = 1; lane <= 8; lane++) {
+          if (LANES[lane]) {
+            LANES[lane].running = true;
+            LANES[lane].start = now;
+            document.getElementById(`tag-${lane}`).textContent = 'RUNNING';
+            document.getElementById(`tag-${lane}`).className =
+              'small-tag tag-running';
+          }
+        }
+        setStatus('Race running');
+      }
+
+      function stopLane(lane) {
+        if (!LANES[lane]) return;
+        LANES[lane].running = false;
+        document.getElementById(`tag-${lane}`).textContent = 'STOPPED';
+        document.getElementById(`tag-${lane}`).className =
+          'small-tag tag-stopped';
+      }
+
+      async function loadAll() {
+        const ev = document.getElementById('eventInput').value;
+        const ht = document.getElementById('heatInput').value;
+
+        document.getElementById('hdrEvent').textContent = ev;
+        document.getElementById('hdrHeat').textContent = ht;
+
+        setStatus('Loading…');
+        createCards();
+        LANES = {};
+
+        for (let lane = 1; lane <= 8; lane++) await loadLane(ev, ht, lane);
+
+        setStatus('Waiting for START…');
+
+        clearInterval(poll);
+        clearInterval(tick);
+
+        poll = setInterval(() => checkStart(ev, ht), 250);
+        tick = setInterval(tickTimers, 10);
+      }
+
+      document.getElementById('loadBtn').onclick = loadAll;
+
+      // initial load
+      loadAll();
+    </script>
+  </body>
+</html>
