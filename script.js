@@ -3,7 +3,7 @@ const API =
   'https://script.google.com/macros/s/AKfycbxeZVjT5VEh4L96vDxDqiR1DHMMRE7td4VlR4Kqnr-NFRUAuI0HeDqVuV6K5SWT0gFaWg/exec';
 
 // 🔧 ESP32 WebSocket URL (update IP if ESP32 gets a new one)
-const ESP32_WS_URL = 'ws://172.18.0.98:81';
+const ESP32_WS_URL = 'ws://172.18.0.113:81';
 
 let lane,
   eventNo = null,
